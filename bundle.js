@@ -34,14 +34,16 @@ var CONDITIONS = {
   LOTTO_PRICE: 1000
 };
 var ERROR_MESSAGE = {
-  NEGATIVE_INPUT_ERROR: 'please enter positive number',
-  NOT_INTEGER_INPUT_ERROR: 'please enter integer number',
-  NOT_MUTIPLE_THOUSAND: 'please enter number that is mutiples of thousand',
-  NULL_INPUT_ERROR: 'please enter input',
-  HAS_DUPLICATED_WINNING_NUMBER: 'please enter winning number without duplication',
-  HAS_DUPLICATED_BONUS_NUMBER: 'please enter bonus number without duplicaiton',
-  HAS_OUT_OF_RANGE_NUMBER: "please enter winning number between ".concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX),
-  HAS_OUT_OF_RANGE_BONUS_NUMBER: "please enter bonus number between ".concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX)
+  NEGATIVE_INPUT_ERROR: '양수를 입력해 주세요! \n (please enter positive number)',
+  NOT_INTEGER_INPUT_ERROR: '정수를 입력해 주세요! \n (please enter integer number)',
+  NOT_MUTIPLE_THOUSAND: '1000단위로 입력해 주세요! \n (please enter number that is mutiples of thousand)',
+  NULL_INPUT_ERROR: '입력칸이 비어있어요! \n (please enter input)',
+  HAS_DUPLICATED_WINNING_NUMBER: '당첨번호를 중복없이 입력해 주세요! \n (please enter winning number without duplication)',
+  HAS_DUPLICATED_BONUS_NUMBER: '보너스 번호를 당첨번호와 중복없이 입력해주세요! \n (please enter bonus number without duplicaiton)',
+  HAS_OUT_OF_RANGE_NUMBER: "\uB2F9\uCCA8\uBC88\uD638\uB294 ".concat(CONDITIONS.LOTTO_NUM_MIN, " \uC640 ").concat(CONDITIONS.LOTTO_NUM_MAX, " \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4! \n (please enter winning number between ").concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX, ")"),
+  HAS_OUT_OF_RANGE_BONUS_NUMBER: "\uBCF4\uB108\uC2A4\uBC88\uD638\uB294 ".concat(CONDITIONS.LOTTO_NUM_MIN, " \uC640 ").concat(CONDITIONS.LOTTO_NUM_MAX, " \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4! \n (please enter bonus number between ").concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX, ")"),
+  NOT_ENOUGH_WINNING_NUMBER_INPUT: "\uB2F9\uCCA8\uBC88\uD638 ".concat(CONDITIONS.LOTTO_SIZE, "\uAC1C \uC785\uB825 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4. \n(please enter winning ").concat(CONDITIONS.LOTTO_SIZE, "number)"),
+  NOT_ENOUGH_BONUS_NUMBER_INPUT: "\uBCF4\uB108\uC2A4\uBC88\uD638 \uB123\uC5B4\uC8FC\uC138\uC694 \n(please enter bonus number)"
 };
 var WINNING_PRICE = {
   MATCH_SIX: 2000000000,
@@ -66,6 +68,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _view_View_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../view/View.js */ "./src/js/view/View.js");
 /* harmony import */ var _model_LottoGame_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../model/LottoGame.js */ "./src/js/model/LottoGame.js");
 /* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./src/js/utils.js");
+/* harmony import */ var _constants_constants_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../constants/constants.js */ "./src/js/constants/constants.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -73,6 +76,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -188,8 +192,7 @@ var LottoController = /*#__PURE__*/function () {
     }
   }, {
     key: "detectInvalidWinningNumberInput",
-    value: //TODO : 얘가 bonus까지 검사하지 않게 분리
-    function detectInvalidWinningNumberInput() {
+    value: function detectInvalidWinningNumberInput() {
       try {
         _utils_js__WEBPACK_IMPORTED_MODULE_2__.validator.isWinningNumbersInputValid(this.lottoGame.winningNumbers, this.lottoGame.bonusNumber);
       } catch (err) {
@@ -208,16 +211,26 @@ var LottoController = /*#__PURE__*/function () {
       });
       this.lottoGame.enterWinningNumbers(winningNumberInputArray);
 
-      if (winningNumberInputArray.filter(function (element) {
-        return element !== 0;
-      }).length < 6) {
-        alert('당첨번호 6개 입력 부탁드립니다.');
-        var winningNumber = document.getElementById("winning-number".concat(winningNumberInputArray.indexOf(0)));
-        winningNumber.focus();
+      try {
+        this.focusEmptyWinningNumber(winningNumberInputArray);
+      } catch (err) {
+        alert(err);
         return false;
       }
 
       return true;
+    }
+  }, {
+    key: "focusEmptyWinningNumber",
+    value: function focusEmptyWinningNumber(winningNumberInputArray) {
+      if (winningNumberInputArray.filter(function (element) {
+        return element !== 0;
+      }).length < _constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.CONDITIONS.LOTTO_SIZE) {
+        var winningNumber = document.getElementById("winning-number".concat(winningNumberInputArray.indexOf(0)));
+        winningNumber.focus();
+        console.log(_constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.ERROR_MESSAGE.NOT_ENOUGH_WINNING_NUMBER_INPUT);
+        throw new Error(_constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.ERROR_MESSAGE.NOT_ENOUGH_WINNING_NUMBER_INPUT);
+      }
     }
   }, {
     key: "getBonusNumbers",
@@ -225,7 +238,7 @@ var LottoController = /*#__PURE__*/function () {
       this.lottoGame.enterBonusNumber(this.view.bonusNumberInput.value);
 
       if (this.lottoGame.bonusNumber === '') {
-        alert('보너스번호 넣어주세요');
+        alert(_constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.ERROR_MESSAGE.NOT_ENOUGH_BONUS_NUMBER_INPUT);
         var bonusNumber = document.getElementById('bonus-number');
         bonusNumber.focus();
         return false;
