@@ -40,7 +40,7 @@ var ERROR_MESSAGE = {
   NULL_INPUT_ERROR: '입력칸이 비어있어요! \n (please enter input)',
   HAS_DUPLICATED_WINNING_NUMBER: '당첨번호를 중복없이 입력해 주세요! \n (please enter winning number without duplication)',
   HAS_DUPLICATED_BONUS_NUMBER: '보너스 번호를 당첨번호와 중복없이 입력해주세요! \n (please enter bonus number without duplicaiton)',
-  HAS_OUT_OF_RANGE_NUMBER: "\uB2F9\uCCA8\uBC88\uD638\uB294 ".concat(CONDITIONS.LOTTO_NUM_MIN, " \uC640 ").concat(CONDITIONS.LOTTO_NUM_MAX, " \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4! \n (please enter winning number between ").concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX, ")"),
+  HAS_OUT_OF_RANGE_WINNING_NUMBER: "\uB2F9\uCCA8\uBC88\uD638\uB294 ".concat(CONDITIONS.LOTTO_NUM_MIN, " \uC640 ").concat(CONDITIONS.LOTTO_NUM_MAX, " \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4! \n (please enter winning number between ").concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX, ")"),
   HAS_OUT_OF_RANGE_BONUS_NUMBER: "\uBCF4\uB108\uC2A4\uBC88\uD638\uB294 ".concat(CONDITIONS.LOTTO_NUM_MIN, " \uC640 ").concat(CONDITIONS.LOTTO_NUM_MAX, " \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4! \n (please enter bonus number between ").concat(CONDITIONS.LOTTO_NUM_MIN, " and ").concat(CONDITIONS.LOTTO_NUM_MAX, ")"),
   NOT_ENOUGH_WINNING_NUMBER_INPUT: "\uB2F9\uCCA8\uBC88\uD638 ".concat(CONDITIONS.LOTTO_SIZE, "\uAC1C \uC785\uB825 \uBD80\uD0C1\uB4DC\uB9BD\uB2C8\uB2E4. \n(please enter winning ").concat(CONDITIONS.LOTTO_SIZE, "number)"),
   NOT_ENOUGH_BONUS_NUMBER_INPUT: "\uBCF4\uB108\uC2A4\uBC88\uD638 \uB123\uC5B4\uC8FC\uC138\uC694 \n(please enter bonus number)"
@@ -228,7 +228,6 @@ var LottoController = /*#__PURE__*/function () {
       }).length < _constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.CONDITIONS.LOTTO_SIZE) {
         var winningNumber = document.getElementById("winning-number".concat(winningNumberInputArray.indexOf(0)));
         winningNumber.focus();
-        console.log(_constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.ERROR_MESSAGE.NOT_ENOUGH_WINNING_NUMBER_INPUT);
         throw new Error(_constants_constants_js__WEBPACK_IMPORTED_MODULE_3__.ERROR_MESSAGE.NOT_ENOUGH_WINNING_NUMBER_INPUT);
       }
     }
@@ -493,7 +492,6 @@ var validator = {
     return input === 0;
   },
   isWinningNumbersInputValid: function isWinningNumbersInputValid(winningNumbers, bonusNumber) {
-    //duplicated 빈칸이 있으면 0이라서 중첩된걸로 떠버림
     if (!this.isWinningNumberNotDuplicated(winningNumbers)) {
       throw new Error(_constants_constants__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.HAS_DUPLICATED_WINNING_NUMBER);
     }
@@ -503,7 +501,7 @@ var validator = {
     }
 
     if (!this.isWinningNumbersInRange(winningNumbers)) {
-      throw new Error(_constants_constants__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.HAS_OUT_OF_RANGE_NUMBER);
+      throw new Error(_constants_constants__WEBPACK_IMPORTED_MODULE_0__.ERROR_MESSAGE.HAS_OUT_OF_RANGE_WINNING_NUMBER);
     }
 
     if (!this.isBonusNumbersInRange(bonusNumber)) {
@@ -520,11 +518,11 @@ var validator = {
   },
   isWinningNumbersInRange: function isWinningNumbersInRange(winningNumbers) {
     return winningNumbers.every(function (e) {
-      return _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MIN <= e && e <= _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MIN;
+      return _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MIN <= e && e <= _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MAX;
     });
   },
   isBonusNumbersInRange: function isBonusNumbersInRange(bonusNumber) {
-    return _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MIN <= bonusNumber && bonusNumber <= _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MIN;
+    return _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MIN <= bonusNumber && bonusNumber <= _constants_constants__WEBPACK_IMPORTED_MODULE_0__.CONDITIONS.LOTTO_NUM_MAX;
   }
 };
 var getValues = {
